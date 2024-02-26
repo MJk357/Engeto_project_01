@@ -42,82 +42,76 @@ registered_user = {
     'liz': 'pass123',
 }
 #Pomocne promenne
-registered_bool = 0
-correct_number = 0
-text_number = 0
 lenght_dict = {}
+separator = '-' * 40
+title_left = 'LEN'
+title_center = 'OCCURENCES'
+title_right = 'NR.'
 
 #Nacteni uzivatele
 name = input('username:')
 password = input('password:')
 
 #overeni uzivatele
-if password.strip() == registered_user.get(name.strip()):
-    registered_bool = 1
-else:
+if password.strip() != registered_user.get(name.strip()):
     print('unregistered user, terminating the program..')
+    exit()
 
-#Vyber textu
-if registered_bool:
-    #Uvitani
-    print('-' * 40)
-    print('Welcome to the app,', name)
-    print('We have 3 texts to be analyzed.')
-    print('-' * 40)
+#Uvitani
+print(separator)
+print('Welcome to the app,', name)
+print('We have 3 texts to be analyzed.')
+print(separator)
 
-    #Vyber varianty
-    text_number = int(input('Enter a number btw. 1 and 3 to select:'))
-    print('-' * 40)
-    #Overeni vyberu
-    if text_number not in range(1, 4):
-        print('Wrong entered value.')
-    else:
-        correct_number = 1
+#Vyber varianty
+text_number = input('Enter a number btw. 1 and 3 to select:')
+print(separator)
+#Overeni vyberu
+if text_number.isdigit() and int(text_number) in range(1, 4):
+    text_number = int(text_number)
+else:
+    print('Wrong entered value.')
+    exit()
+
 #Vypocet statistiky
-if correct_number:
-    my_text = TEXTS[text_number-1].replace('.', '').replace(',', '')
+my_text = TEXTS[text_number-1].replace('.', '').replace(',', '')
 
-    total_words = 0
-    first_letter = 0
-    capital_words = 0
-    lowercase_words = 0
-    numeric = 0
-    total_sum = 0
-    for word in my_text.split():
-        total_words += 1
-        if len(word) in lenght_dict.keys():
-            lenght_dict[len(word)] = lenght_dict.get(len(word)) + 1
-        else:
-            lenght_dict[len(word)] = 1
-        if word.istitle():
-            first_letter += 1
-            continue
-        if word.isupper():
-            capital_words += 1
-            continue
-        if word.islower():
-            lowercase_words += 1
-            continue
-        if word.isnumeric():
-            numeric += 1
-            total_sum += int(word)
+total_words = 0
+first_letter = 0
+capital_words = 0
+lowercase_words = 0
+numeric = 0
+total_sum = 0
+for word in my_text.split():
+    total_words += 1
+    lenght_dict[len(word)] = lenght_dict.get(len(word), 0) + 1
+    if word.istitle():
+        first_letter += 1
+    elif word.isupper():
+        capital_words += 1
+    elif word.islower():
+        lowercase_words += 1
+    elif word.isnumeric():
+        numeric += 1
+        total_sum += int(word)
 
 
-    #Vypis
-    print('There are', total_words, 'words in the selected text.')
-    print('There are', first_letter, 'titlecase words.')
-    print('There are', capital_words, 'uppercase words.')
-    print('There are', lowercase_words, 'lowercase words.')
-    print('There are', numeric, 'numeric strings.')
-    print('The sum of all the numbers', total_sum)
-    print('-' * 40)
+#Vypis
+print('There are', total_words, 'words in the selected text.')
+print('There are', first_letter, 'titlecase words.')
+print('There are', capital_words, 'uppercase words.')
+print('There are', lowercase_words, 'lowercase words.')
+print('There are', numeric, 'numeric strings.')
+print('The sum of all the numbers', total_sum)
+print(separator)
 
-    #Graf
-    pocet_mezer = math.ceil((max(lenght_dict.values())-10)/2)
-    print('LEN|', ' ' * pocet_mezer, 'OCCURENCES', ' ' * pocet_mezer, '|NR.', sep='')
-    print('-' * 40)
-    for key in sorted(lenght_dict):
-        digits = 3 - len(str(key))
-        stars = lenght_dict[key]
-        empty = (pocet_mezer * 2) + 10 - stars
-        print(' ' * digits, key,'|', '*' * stars , ' ' * empty, '|', stars, sep='')
+#Graf
+pocet_mezer = math.ceil((max(lenght_dict.values())-len(title_center))/2)
+print(f"{title_left}|{' ' * pocet_mezer}{title_center}{' ' * pocet_mezer}|{title_right}", sep='')
+
+print(separator)
+for key in sorted(lenght_dict):
+    digits = len(title_left) - len(str(key))
+    stars = lenght_dict[key]
+    empty = (pocet_mezer * 2) + len(title_center) - stars
+    print(' ' * digits, key,'|', '*' * stars , ' ' * empty, '|', stars, sep='')
