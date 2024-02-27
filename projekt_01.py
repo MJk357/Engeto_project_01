@@ -67,7 +67,7 @@ print(separator)
 text_number = input('Enter a number btw. 1 and 3 to select:')
 print(separator)
 #Overeni vyberu
-if text_number.isdigit() and int(text_number) in range(1, 4):
+if text_number.isdigit() and int(text_number) in range(1, len(TEXTS) + 1):
     text_number = int(text_number)
 else:
     print('Wrong entered value.')
